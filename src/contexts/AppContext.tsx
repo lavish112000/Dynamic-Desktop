@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { Wallpaper, Settings, ThemeColors } from '@/lib/types';
 
-const wallpapers: Wallpaper[] = [
+const initialWallpapers: Wallpaper[] = [
   { id: 'vid1', type: 'video', src: 'https://cdn.pixabay.com/video/2024/02/05/197907-910236049_large.mp4', thumbnail: 'https://picsum.photos/300/200?random=1', name: 'Cosmic Flow' },
   { id: 'vid2', type: 'video', src: 'https://cdn.pixabay.com/video/2023/07/01/172153-842289139_large.mp4', thumbnail: 'https://picsum.photos/300/200?random=2', name: 'Neon City' },
   { id: 'img1', type: 'image', src: 'https://picsum.photos/1920/1080?random=3', thumbnail: 'https://picsum.photos/300/200?random=3', name: 'Misty Mountains' },
@@ -19,11 +19,13 @@ interface AppContextType {
   updateSettings: (newSettings: Partial<Settings>) => void;
   switchToStatic: () => void;
   applyTheme: (colors: ThemeColors) => void;
+  addWallpaper: (wallpaper: Omit<Wallpaper, 'id'>) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
+  const [wallpapers, setWallpapers] = useState<Wallpaper[]>(initialWallpapers);
   const [currentWallpaper, setCurrentWallpaper] = useState<Wallpaper>(wallpapers[0]);
   const [settings, setSettings] = useState<Settings>({
     startOnBoot: true,
@@ -50,6 +52,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   
+  const addWallpaper = (newWallpaperData: Omit<Wallpaper, 'id'>) => {
+    const newWallpaper: Wallpaper = {
+        id: `wallpaper_${Date.now()}`,
+        ...newWallpaperData,
+    };
+    setWallpapers(prev => [...prev, newWallpaper]);
+  };
+
   const applyTheme = (colors: ThemeColors) => {
     const root = document.documentElement;
     const hexToHsl = (hex: string): string => {
@@ -91,7 +101,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
 
   return (
-    <AppContext.Provider value={{ wallpapers, currentWallpaper, setCurrentWallpaper, settings, updateSettings, switchToStatic, applyTheme }}>
+    <AppContext.Provider value={{ wallpapers, currentWallpaper, setCurrentWallpaper, settings, updateSettings, switchToStatic, applyTheme, addWallpaper }}>
       {children}
     </AppContext.Provider>
   );
