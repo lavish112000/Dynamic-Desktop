@@ -13,8 +13,8 @@ import { useAppContext } from '@/contexts/AppContext';
 const FormSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters."),
   type: z.enum(["image", "video"], { required_error: "You need to select a wallpaper type." }),
-  src: z.string().url("Please enter a valid URL."),
-  thumbnail: z.string().url("Please enter a valid thumbnail URL."),
+  sourceFile: z.any().refine(file => file instanceof File, "Please upload a source file."),
+  thumbnailFile: z.any().refine(file => file instanceof File, "Please upload a thumbnail file."),
 });
 
 type FormValues = z.infer<typeof FormSchema>;
@@ -28,14 +28,21 @@ export default function AddWallpaperForm({ onFinish }: { onFinish: () => void })
     defaultValues: {
         name: "",
         type: "image",
-        src: "",
-        thumbnail: ""
     },
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      addWallpaper(data);
+      const srcUrl = URL.createObjectURL(data.sourceFile);
+      const thumbnailUrl = URL.createObjectURL(data.thumbnailFile);
+      
+      addWallpaper({
+          name: data.name,
+          type: data.type,
+          src: srcUrl,
+          thumbnail: thumbnailUrl
+      });
+
       toast({
         title: "Wallpaper Added!",
         description: `${data.name} has been added to your collection.`,
@@ -101,12 +108,22 @@ export default function AddWallpaperForm({ onFinish }: { onFinish: () => void })
 
           <FormField
             control={form.control}
-            name="src"
-            render={({ field }) => (
+            name="sourceFile"
+            render={({ field: { onChange, value, ...rest } }) => (
               <FormItem>
-                <FormLabel>Source URL</FormLabel>
+                <FormLabel>Source File</FormLabel>
                 <FormControl>
-                  <Input placeholder="https://example.com/wallpaper.mp4" {...field} />
+                  <Input 
+                    type="file"
+                    accept={form.watch('type') === 'image' ? "image/*" : "video/*"}
+                    onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                            onChange(file);
+                        }
+                    }}
+                    {...rest}
+                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -115,12 +132,22 @@ export default function AddWallpaperForm({ onFinish }: { onFinish: () => void })
 
           <FormField
             control={form.control}
-            name="thumbnail"
-            render={({ field }) => (
+            name="thumbnailFile"
+            render={({ field: { onChange, value, ...rest } }) => (
               <FormItem>
-                <FormLabel>Thumbnail URL</FormLabel>
+                <FormLabel>Thumbnail File</FormLabel>
                 <FormControl>
-                  <Input placeholder="https://example.com/thumbnail.jpg" {...field} />
+                  <Input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                            onChange(file);
+                        }
+                    }}
+                    {...rest}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
