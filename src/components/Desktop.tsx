@@ -28,9 +28,11 @@ export default function Desktop() {
           muted={settings.muteAudio}
           className="absolute top-0 left-0 w-full h-full object-cover"
           playsInline
+          aria-label={`Desktop wallpaper: ${currentWallpaper.name}`}
+          preload="metadata"
         >
           <source src={currentWallpaper.src} type="video/mp4" />
-          Your browser does not support the video tag.
+          <p>Your browser does not support the video tag. Please consider updating your browser for the best experience.</p>
         </video>
       )}
       <div className="absolute inset-0 bg-black/20" />

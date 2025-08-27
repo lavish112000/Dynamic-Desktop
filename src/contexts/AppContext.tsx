@@ -62,6 +62,21 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   const applyTheme = (colors: ThemeColors) => {
     const root = document.documentElement;
+    
+    // Validate hex colors
+    const isValidHex = (hex: string): boolean => {
+      return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+    };
+    
+    // Validate all colors before applying
+    const colorEntries = Object.entries(colors);
+    for (const [name, color] of colorEntries) {
+      if (!isValidHex(color)) {
+        console.warn(`Invalid color value for ${name}: ${color}. Skipping theme application.`);
+        return;
+      }
+    }
+    
     const hexToHsl = (hex: string): string => {
         let r = 0, g = 0, b = 0;
         if (hex.length === 4) {
@@ -75,7 +90,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         }
         r /= 255; g /= 255; b /= 255;
         const max = Math.max(r, g, b), min = Math.min(r, g, b);
-        let h = 0, s = 0, l = (max + min) / 2;
+        let h = 0, s = 0;
+        const l = (max + min) / 2;
         if (max !== min) {
             const d = max - min;
             s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
@@ -89,14 +105,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
     };
 
-    root.style.setProperty('--primary', hexToHsl(colors.primaryColor));
-    root.style.setProperty('--background', hexToHsl(colors.backgroundColor));
-    root.style.setProperty('--accent', hexToHsl(colors.accentColor));
-    root.style.setProperty('--card', hexToHsl(colors.backgroundColor));
-    root.style.setProperty('--popover', hexToHsl(colors.backgroundColor));
-    root.style.setProperty('--secondary', hexToHsl(colors.secondaryColor));
-    root.style.setProperty('--foreground', hexToHsl(colors.textColor));
-    root.style.setProperty('--sidebar-background', hexToHsl(colors.backgroundColor));
+    try {
+      root.style.setProperty('--primary', hexToHsl(colors.primaryColor));
+      root.style.setProperty('--background', hexToHsl(colors.backgroundColor));
+      root.style.setProperty('--accent', hexToHsl(colors.accentColor));
+      root.style.setProperty('--card', hexToHsl(colors.backgroundColor));
+      root.style.setProperty('--popover', hexToHsl(colors.backgroundColor));
+      root.style.setProperty('--secondary', hexToHsl(colors.secondaryColor));
+      root.style.setProperty('--foreground', hexToHsl(colors.textColor));
+      root.style.setProperty('--sidebar-background', hexToHsl(colors.backgroundColor));
+    } catch (error) {
+      console.error('Error applying theme:', error);
+    }
   };
 
 

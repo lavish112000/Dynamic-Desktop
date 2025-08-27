@@ -32,9 +32,11 @@ export default function AddWallpaperForm({ onFinish }: { onFinish: () => void })
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    let srcUrl = '';
+    let thumbnailUrl = '';
     try {
-      const srcUrl = URL.createObjectURL(data.sourceFile);
-      const thumbnailUrl = URL.createObjectURL(data.thumbnailFile);
+      srcUrl = URL.createObjectURL(data.sourceFile);
+      thumbnailUrl = URL.createObjectURL(data.thumbnailFile);
       
       addWallpaper({
           name: data.name,
@@ -49,6 +51,10 @@ export default function AddWallpaperForm({ onFinish }: { onFinish: () => void })
       });
       onFinish();
     } catch (error) {
+      // Clean up object URLs on error
+      if (srcUrl) URL.revokeObjectURL(srcUrl);
+      if (thumbnailUrl) URL.revokeObjectURL(thumbnailUrl);
+      
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
@@ -109,12 +115,15 @@ export default function AddWallpaperForm({ onFinish }: { onFinish: () => void })
           <FormField
             control={form.control}
             name="sourceFile"
-            render={({ field: { onChange, value, ...rest } }) => (
+            render={({ field: { onChange, name, onBlur, ref } }) => (
               <FormItem>
                 <FormLabel>Source File</FormLabel>
                 <FormControl>
                   <Input 
                     type="file"
+                    name={name}
+                    ref={ref}
+                    onBlur={onBlur}
                     accept={form.watch('type') === 'image' ? "image/*" : "video/*"}
                     onChange={(e) => {
                         const file = e.target.files?.[0];
@@ -122,7 +131,6 @@ export default function AddWallpaperForm({ onFinish }: { onFinish: () => void })
                             onChange(file);
                         }
                     }}
-                    {...rest}
                    />
                 </FormControl>
                 <FormMessage />
@@ -133,12 +141,15 @@ export default function AddWallpaperForm({ onFinish }: { onFinish: () => void })
           <FormField
             control={form.control}
             name="thumbnailFile"
-            render={({ field: { onChange, value, ...rest } }) => (
+            render={({ field: { onChange, name, onBlur, ref } }) => (
               <FormItem>
                 <FormLabel>Thumbnail File</FormLabel>
                 <FormControl>
                   <Input 
-                    type="file" 
+                    type="file"
+                    name={name}
+                    ref={ref}
+                    onBlur={onBlur}
                     accept="image/*"
                     onChange={(e) => {
                         const file = e.target.files?.[0];
@@ -146,7 +157,6 @@ export default function AddWallpaperForm({ onFinish }: { onFinish: () => void })
                             onChange(file);
                         }
                     }}
-                    {...rest}
                   />
                 </FormControl>
                 <FormMessage />
