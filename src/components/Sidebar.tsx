@@ -489,7 +489,7 @@ export default function Sidebar() {
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              <SheetContent>
+              <SheetContent side="left">
                 <SheetHeader>
                   <SheetTitle>Settings</SheetTitle>
                 </SheetHeader>
