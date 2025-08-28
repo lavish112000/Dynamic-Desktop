@@ -7,6 +7,12 @@
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
     "build": "next build",
+    "build:desktop": "next build && npm run package:desktop",
+    "package:desktop": "node scripts/package-desktop.js",
+    "create:installers": "node scripts/create-installers.js",
+    "create:distribution": "node scripts/create-distribution.js",
+    "build:all": "npm run build:desktop && npm run create:installers",
+    "release": "npm run build:all && npm run create:distribution",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"

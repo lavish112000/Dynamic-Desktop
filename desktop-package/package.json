@@ -1,0 +1,15 @@
+{
+  "name": "dynamic-desktop",
+  "version": "1.0.0",
+  "description": "Dynamic Desktop - Live Wallpaper Manager",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "install-deps": "npm install express"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "author": "Dynamic Desktop Team",
+  "license": "MIT"
+}

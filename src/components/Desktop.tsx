@@ -2,13 +2,13 @@
 
 import { useAppContext } from "@/contexts/AppContext";
 import Image from "next/image";
-import OSD from "./OSD";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function Desktop() {
   const { currentWallpaper, settings } = useAppContext();
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-background">
+    <div className="relative h-full w-full overflow-hidden bg-background">
       {currentWallpaper.type === 'image' && (
         <Image
           src={currentWallpaper.src}
@@ -34,7 +34,13 @@ export default function Desktop() {
         </video>
       )}
       <div className="absolute inset-0 bg-black/20" />
-      <OSD />
+      
+      {/* Sidebar Toggle Button - positioned in top-left */}
+      <div className="absolute top-4 left-4 z-50">
+        <div className="p-2 bg-card/50 backdrop-blur-md rounded-lg border border-border shadow-lg">
+          <SidebarTrigger className="h-8 w-8" />
+        </div>
+      </div>
     </div>
   );
 }

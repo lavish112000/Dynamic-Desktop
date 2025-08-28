@@ -38,7 +38,64 @@ export default function ThemeGenerator({ onFinish }: { onFinish: () => void }) {
     setIsGenerating(true);
     setGeneratedColors(null);
     try {
-      const result = await generateThemeAction(data);
+      // Mock theme generation for static build
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API delay
+      
+      // Generate colors based on description keywords
+      const description = data.themeDescription.toLowerCase();
+      let result: ThemeColors;
+      
+      if (description.includes('dark') || description.includes('night')) {
+        result = {
+          primaryColor: "#3b82f6",
+          backgroundColor: "#0f172a",
+          accentColor: "#6366f1", 
+          secondaryColor: "#334155",
+          textColor: "#f8fafc"
+        };
+      } else if (description.includes('ocean') || description.includes('blue')) {
+        result = {
+          primaryColor: "#0ea5e9",
+          backgroundColor: "#0c4a6e",
+          accentColor: "#38bdf8",
+          secondaryColor: "#075985",
+          textColor: "#f0f9ff"
+        };
+      } else if (description.includes('forest') || description.includes('green')) {
+        result = {
+          primaryColor: "#10b981",
+          backgroundColor: "#064e3b",
+          accentColor: "#34d399",
+          secondaryColor: "#065f46",
+          textColor: "#ecfdf5"
+        };
+      } else if (description.includes('sunset') || description.includes('orange')) {
+        result = {
+          primaryColor: "#f97316",
+          backgroundColor: "#7c2d12",
+          accentColor: "#fb923c",
+          secondaryColor: "#9a3412",
+          textColor: "#fff7ed"
+        };
+      } else if (description.includes('purple') || description.includes('violet')) {
+        result = {
+          primaryColor: "#8b5cf6",
+          backgroundColor: "#4c1d95",
+          accentColor: "#a78bfa",
+          secondaryColor: "#5b21b6",
+          textColor: "#f5f3ff"
+        };
+      } else {
+        // Default vibrant theme
+        result = {
+          primaryColor: "#667eea",
+          backgroundColor: "#1a1a1a",
+          accentColor: "#764ba2",
+          secondaryColor: "#4a4a4a",
+          textColor: "#ffffff"
+        };
+      }
+      
       setGeneratedColors(result);
       toast({
         title: "Theme Generated!",
