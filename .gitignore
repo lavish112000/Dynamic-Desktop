@@ -43,3 +43,30 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# Desktop packaging artifacts
+/desktop-package
+/installers
+/distributions
+
+# Code review and analysis artifacts
+/dist/cache
+.eslintcache
+/tmp
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+.DS_Store?
+ehthumbs.db
+Icon?
+
+# Build artifacts that shouldn't be committed
+/coverage
+/nyc_output

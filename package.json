@@ -15,7 +15,12 @@
     "release": "npm run build:all && npm run create:distribution",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "lint:fix": "next lint --fix",
+    "typecheck": "tsc --noEmit",
+    "review": "node scripts/code-review-helper.js",
+    "review:quick": "npm run lint && npm run typecheck",
+    "pre-commit": "npm run review:quick && npm run test",
+    "test": "echo \"Warning: No tests specified\" && exit 0"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.14.1",
